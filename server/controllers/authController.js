@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 
 const User = require('../models/userModel')
@@ -56,34 +57,26 @@ const loginUser = async (req, res) => {
     }
 
     try {
+        const user = await User.findOne({ email });
 
-        await User.findOne({ email }).then(
-            (user) => {
-                if (user) {
-                    bcrypt.compare(password, user.password, async (err, match) => {
-                        if (match) {
-                            res.status(200).json({
-                                status: "success",
-                            })
-                        }
-                        else {
-                            res.status(404).json({ notMatch: 'Your password is incorrect' })
-                        }
-                    })
-                }
-                else {
-                    res.status(404).json({ notMatch: 'Such an email does not exist' })
-                }
+        if (!user) {
+            return res.status(401).json({ notMatch: 'Such an email does not exist' });
+        }
 
-            }
-        )
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ notMatch: 'Your password is incorrect' });
+        }
+
+        const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY, {
+            expiresIn: '1h',
+        });
+
+        res.json({ token, email });
 
     } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            error,
-        })
-
+        console.error(error);
+        res.json({ notMatch: 'Internal server error'});
     }
 }
 

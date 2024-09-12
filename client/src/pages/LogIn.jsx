@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
+import Cookies from "js-cookie";
+import { useUserContext } from '../hooks/useUserContext';
 
 
 function LogIn({ setAuthenticated }) {
@@ -11,6 +13,8 @@ function LogIn({ setAuthenticated }) {
     const [notMatch, setNotMatch] = useState(null)
     const [error, setError] = useState(null)
     const [emptyFields, setEmptyFields] = useState([])
+
+    const { setAuth } = useUserContext()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -38,7 +42,10 @@ function LogIn({ setAuthenticated }) {
             setNotMatch(null)
             setError(null)
             setEmptyFields([])
-            setAuthenticated(true);
+
+            setAuth(true)
+            Cookies.set('token', json.token, { expires: 5 })
+            Cookies.set("email", json.email, { expires: 5 })
             navigate('/')
         }
     }

@@ -1,12 +1,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
-var cors = require('cors')
+const cors = require('cors')
+const dotenv = require('dotenv')
 
 const libraryRoutes = require('./routes/libraryRoutes')
 const userRoutes = require('./routes/userRoutes')
 
 const app = express()
 const port = 5000
+dotenv.config()
 
 
 // Middlewares

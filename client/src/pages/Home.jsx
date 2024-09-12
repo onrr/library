@@ -3,10 +3,12 @@ import { useLibraryContext } from '../hooks/useLibraryContext'
 
 import LibraryForm from '../components/LibraryForm'
 import LibraryDetails from '../components/LibraryDetails'
+import { useUserContext } from '../hooks/useUserContext';
 
-function Home({authenticated}) {
+function Home() {
 
   const { library, dispatch } = useLibraryContext()
+  const { auth } = useUserContext()
 
   const fetchLibrary = async () => {
     const res = await fetch('http://localhost:5000/api/books')
@@ -27,11 +29,11 @@ function Home({authenticated}) {
       <div className="container">
         <div className="books">
           {library?.map(lbr => (
-            <LibraryDetails key={lbr._id} lbr={lbr} fetchLibrary={fetchLibrary} authenticated={authenticated} />
+            <LibraryDetails key={lbr._id} lbr={lbr} fetchLibrary={fetchLibrary}/>
           ))}
         </div>
         {
-          authenticated && <LibraryForm authenticated={authenticated} />
+          auth && <LibraryForm />
         }
       </div>
     </div>

@@ -1,12 +1,12 @@
 import React from 'react'
 import { useLibraryContext } from '../hooks/useLibraryContext'
-
+import { useUserContext } from '../hooks/useUserContext'
 import { formatDistanceToNow } from 'date-fns'
 
 
-function LibraryDetails({ lbr, fetchLibrary, authenticated }) {
+function LibraryDetails({ lbr, fetchLibrary}) {
 
-
+    const { auth } = useUserContext()
     const { dispatch } = useLibraryContext()
 
     const handleClick = async () => {
@@ -35,7 +35,7 @@ function LibraryDetails({ lbr, fetchLibrary, authenticated }) {
             <div className='row'>
                 <p className="date">({formatDistanceToNow(new Date(lbr.createdAt), { addSuffix: true })})</p>
                 {
-                    authenticated && <span  className='del' onClick={handleClick}>delete</span>
+                    auth && <span  className='del' onClick={handleClick}>delete</span>
                 }
             </div>
         </div>

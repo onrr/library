@@ -1,28 +1,34 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, json } from 'react-router-dom'
 import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import Login from './pages/LogIn'
 import Navbar from './components/Navbar'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
+import { useUserContext } from './hooks/useUserContext';
+import Cookies from 'js-cookie'
 
 
 function App() {
 
-  const [authenticated, setAuthenticated] = useState(JSON.parse(localStorage.getItem("auth")) || false);
+  const { auth, setAuth } = useUserContext()
 
+  console.log("a", auth)
   useEffect(() => {
-    localStorage.setItem("auth", JSON.stringify(authenticated))
-  }, [authenticated])
+    const user = Cookies.get('token');
+    if (user) {
+      setAuth(true)
+    }
+  }, [])
 
   return (
     <>
       <BrowserRouter>
-        <Navbar authenticated={authenticated} setAuthenticated={setAuthenticated} />
+        <Navbar />
         <div className="pages">
           <Routes>
-            <Route path='/' element={<Home authenticated={authenticated} />} />
+            <Route path='/' element={<Home />} />
             <Route path='/signup' element={<SignUp />} />
-            <Route path='/signin' element={<Login setAuthenticated={setAuthenticated} />} />
+            <Route path='/signin' element={<Login />} />
           </Routes>
         </div>
       </BrowserRouter>

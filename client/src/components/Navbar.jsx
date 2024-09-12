@@ -1,7 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useUserContext } from '../hooks/useUserContext';
+import Cookies from 'js-cookie'
 
-function Navbar({ authenticated, setAuthenticated }) {
+function Navbar() {
+
+  const {auth, setAuth} = useUserContext()
+
+  const logOutFunc = () => {
+    setAuth(false)
+    Cookies.remove("token")
+    Cookies.remove("email")
+  }
   
   return (
     <header className='nav'>
@@ -10,7 +20,7 @@ function Navbar({ authenticated, setAuthenticated }) {
           <h1>Library</h1>
         </Link>
         {
-          authenticated === true ? <Link to='/' onClick={() => setAuthenticated(false)} >
+          auth === true ? <Link to='/' onClick={logOutFunc} >
             <h1>Log Out</h1>
           </Link>
             : <div className='sign'>
