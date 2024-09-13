@@ -4,7 +4,7 @@ import SignUp from './pages/SignUp'
 import Login from './pages/LogIn'
 import Navbar from './components/Navbar'
 import { useEffect } from 'react'
-import { useUserContext } from './hooks/useUserContext';
+import { useUserContext } from './hooks/useUserContext'
 import Cookies from 'js-cookie'
 
 
@@ -14,7 +14,7 @@ function App() {
 
   console.log("a", auth)
   useEffect(() => {
-    const user = Cookies.get('token');
+    const user = Cookies.get('email');
     if (user) {
       setAuth(true)
     }

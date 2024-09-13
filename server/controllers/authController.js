@@ -72,33 +72,53 @@ const loginUser = async (req, res) => {
             expiresIn: '1h',
         });
 
-        res.json({ token, email });
+        res.cookie('token', token, {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'Strict',
+        })
+
+        res.cookie('email', email, {
+            httpOnly: false,
+            secure: true,
+            sameSite: 'Strict',
+        })
+        // res.json({ token, email });
+        res.json({ message: 'Login Successful' });
 
     } catch (error) {
         console.error(error);
-        res.json({ notMatch: 'Internal server error'});
+        res.json({ notMatch: 'Internal server error' });
     }
 }
 
-const getUsers = async (req, res) => {
-    const user = await User.find({}).sort({ createdAt: -1 })
-    res.status(200).json(user)
+const logOutUser = async (req, res) => {
+    res.clearCookie('token')
+
+    res.clearCookie('email')
+
+    res.json({ message: 'Logout Successful' });
 }
 
-const getUser = async (req, res) => {
-    const { id } = req.params
+// const getUsers = async (req, res) => {
+//     const user = await User.find({}).sort({ createdAt: -1 })
+//     res.status(200).json(user)
+// }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'No such user' })
-    }
+// const getUser = async (req, res) => {
+//     const { id } = req.params
 
-    const user = await User.findById(id)
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//         return res.status(400).json({ error: 'No such user' })
+//     }
 
-
-    if (!user) return res.status(400).json({ error: "No such user" })
-
-    res.status(200).json(user)
-}
+//     const user = await User.findById(id)
 
 
-module.exports = { createUser, loginUser, getUsers, getUser }
+//     if (!user) return res.status(400).json({ error: "No such user" })
+
+//     res.status(200).json(user)
+// }
+
+
+module.exports = { createUser, loginUser, logOutUser }

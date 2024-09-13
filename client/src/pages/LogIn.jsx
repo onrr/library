@@ -1,10 +1,9 @@
 import React, { useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom';
-import Cookies from "js-cookie";
-import { useUserContext } from '../hooks/useUserContext';
+import { useNavigate } from 'react-router-dom'
+import { useUserContext } from '../hooks/useUserContext'
 
 
-function LogIn({ setAuthenticated }) {
+function LogIn() {
 
     const navigate = useNavigate()
 
@@ -22,6 +21,7 @@ function LogIn({ setAuthenticated }) {
         const user = { email, password }
         const res = await fetch('http://localhost:5000/api/users/login', {
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify(user),
             headers: {
                 'Content-Type': 'application/json'
@@ -44,8 +44,6 @@ function LogIn({ setAuthenticated }) {
             setEmptyFields([])
 
             setAuth(true)
-            Cookies.set('token', json.token, { expires: 5 })
-            Cookies.set("email", json.email, { expires: 5 })
             navigate('/')
         }
     }
